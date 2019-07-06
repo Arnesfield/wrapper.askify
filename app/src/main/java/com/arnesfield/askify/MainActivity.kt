@@ -8,7 +8,9 @@ import android.webkit.WebViewClient
 import android.webkit.WebChromeClient
 import android.annotation.SuppressLint
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.widget.Button
 import android.widget.TextView
 
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
+        webView.addJavascriptInterface(this, "android")
 
         val activity = this
         webView.webChromeClient = object : WebChromeClient() {
@@ -74,6 +77,28 @@ class MainActivity : AppCompatActivity() {
         flag = View.VISIBLE
         Log.d(TAG, URL)
         webView.loadUrl(URL)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.action == KeyEvent.ACTION_DOWN) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_BACK -> {
+                    webView.loadUrl("javascript:android.back(\$mobile.back())")
+                    //webView.loadUrl("javascript:\$mobile.back()")
+                    return true
+                }
+            }
+        }
+
+        return super.onKeyDown(keyCode, event)
+    }
+
+    @JavascriptInterface
+    public fun back(value: Boolean) {
+        Log.d(TAG, value.toString())
+        if (!value) {
+            finish()
+        }
     }
 
 }
