@@ -14,9 +14,11 @@ import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
-    private val DEV = false
+    private val DEV = true
     private val TAG = "tagx"
-    private val URL = if (DEV) "http://" else "http://askify.x10.mx/"
+    private val URL =
+        if (DEV) "http://192.168.43.115/school/askify/web.askify/dist"
+        else "http://askify.x10.mx/"
 
     private lateinit var webView: WebView
     private lateinit var textView: TextView
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
 
         val activity = this
         webView.webChromeClient = object : WebChromeClient() {
@@ -69,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun load() {
         flag = View.VISIBLE
+        Log.d(TAG, URL)
         webView.loadUrl(URL)
     }
 
